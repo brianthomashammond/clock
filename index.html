@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand minute-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+
+<style>
+    :root {
+        --clock-color: rgb(0, 0, 0)
+        --second-hand: rgb(0, 0, 0)
+    }
+
+    html {
+      background-image: linear-gradient(#2B2D42, #8D99AE);
+      background-size: cover;
+      font-family: 'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+      font-size: 2rem;
+      display: flex;
+      flex: 1;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clock {
+      width: 30rem;
+      height: 30rem;
+      border: 20px solid var(--clock-color);
+      border-radius: 50%;
+      margin: 50 px auto;
+      position: relative;
+      padding: 2rem;
+      box-shadow:
+        0 0 0px 4px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px #000000,
+        0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px);
+    }
+
+    .hand {
+      width: 50%;
+      height: 6px;
+      background: #000000;
+      border-radius: 20px;
+      position: absolute;
+      top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    }
+
+    .hour-hand {
+      width: 30%;
+      background: #FFFFFF;
+      z-index: 3;
+    }
+
+    .minute-hand {
+      width: 40%;
+      z-index: 2;
+    }
+
+    .second-hand {
+      background: var(--second-hand);
+      z-index: 1;
+    }
+</style>
+
+<script>
+  const secondHand = document.querySelector('.second-hand');
+  const minuteHand = document.querySelector('.minute-hand');
+  const hourHand = document.querySelector('.hour-hand');
+
+  function setDate() {
+    const now = new Date();
+    const seconds = now.getSeconds();
+    const minutes = now.getMinutes();
+    const hours = now.getHours();
+    const secondsDegrees = (seconds * 6) + 90;
+    const minutesDegrees = (minutes * 6) + 90 + (0.1 * seconds);
+    const hoursDegrees = ((hours) * 30) + 90 + (minutes / 60) + (seconds / 3600);
+    let colorSeconds
+    if (seconds < 30) {
+        colorSeconds = seconds * 8
+    } else {
+        colorSeconds = 240 - (seconds % 30) * 8
+    }
+    let colorMinutes = minutes * 4
+    let colorHours = hours * 10
+
+    let secondHandColor = 240 - colorSeconds
+
+    if (secondsDegrees === 90) {
+      secondHand.style.transition = `none`;
+    } else {
+      secondHand.style.transition = `all 0.05s`;
+    }
+    document.documentElement.style.setProperty(`--clock-color`, `rgb(${colorSeconds}, ${colorMinutes}, ${colorHours})`)
+    document.documentElement.style.setProperty(`--second-hand`, `rgb(${secondHandColor}, ${colorMinutes}, ${colorHours})`)
+    secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+    minuteHand.style.transform = `translateX(24%) rotate(${minutesDegrees}deg)`;
+    hourHand.style.transform = `translateX(67%) rotate(${hoursDegrees}deg)`;
+  }
+
+  setInterval(setDate, 1000)
+</script>
+</body>
+</html>
